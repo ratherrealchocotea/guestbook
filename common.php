@@ -1,6 +1,6 @@
 <?php 
 
-if (isset($_SESSION["valid"]) {
+if (isset($_SESSION["valid"])) {
     if(isset($_SESSION["last_activity"]) && 
        time() - $_SESSION["last_activity"] > 1800) {
         session_destroy();
