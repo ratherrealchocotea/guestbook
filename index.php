@@ -34,9 +34,9 @@ if(isset($_POST['post'])) {
         gen_captcha();
         exit("Wrong CAPTCHA.");
     }
-    $subject = trim($_POST['subject'] ?? '');
-    $name = trim($_POST['name'] ?? '');
-    $body = trim($_POST['body'] ?? '');
+    $subject = strips_tags(trim($_POST['subject'] ?? ''));
+    $name = strip_tags(trim($_POST['name'] ?? ''));
+    $body = strip_tags(trim($_POST['body'] ?? ''));
 
     if ($name === '') { $name = 'Your friendly neighbourhood\'s Anon';}
     
@@ -49,11 +49,14 @@ if(isset($_POST['post'])) {
     ) {
         exit('Invalid Input. Go check if your text does not exceed 4000 chars, or the name 30, or the subject 80, or whether they are empty.');
     }
-
+    
+    $date = date("Y-m-d H:i:s");  
+    
     $stmt = $db->prepare(
-        "INSERT INTO posts(subject,name,body) VALUES(:s,:n,:b)"
+        "INSERT INTO posts(date,subject,name,body) VALUES(:d, :s,:n,:b)"
     );
 
+    $stmt->bindValue(":d", $date, SQLITE3_TEXT);
     $stmt->bindValue(":s", $subject, SQLITE3_TEXT);
     $stmt->bindValue(":n", $name, SQLITE3_TEXT);
     $stmt->bindValue(":b", $body, SQLITE3_TEXT);
@@ -97,6 +100,7 @@ $posts = $db->query(
                 <b><?=h($p["subject"])?></b>
                 <br>
                 <small><?=h($p["name"])?></small>
+                <small><?=h($p["date"])?></small>
                 <p><?=nl2br(h($p["body"]))?></p>
                 
             </div>

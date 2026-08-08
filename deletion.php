@@ -12,12 +12,12 @@
      $db = new SQLite3($db_path);
      check_csrf();
      $stmt = $db->prepare(
-         "DELETE FROM posts WHERE id = :id"
+         "DELETE FROM posts WHERE date = :d"
      );
      $stmt->bindValue(
-         ":id",
-         (int)$_POST["post_id"],
-         SQLITE3_INTEGER
+         ":d",
+         $_POST["date"],
+         SQLITE3_TEXT
      );
 
      $stmt->execute();
@@ -36,7 +36,7 @@
         <p>You probably shouldn't be here, but you do you...</p>
         <form method="post">
             <input type="hidden" name="csrf" value="<?=h($_SESSION["csrf"])?>">
-            <input type="number" name="post_id" placeholder="Post ID" required>
+            <input type="text" name="date" placeholder="Exact Date" required>
             <button type="submit">Moderation-Delete</button>
         </form>
     </body>

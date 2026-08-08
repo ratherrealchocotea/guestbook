@@ -1,12 +1,13 @@
 #!/usr/bin/env php
 <?php 
 
-include "common.php""
+include "common.php";
 
 $db = new SQLite3($db_path);
 $db->exec("
            CREATE TABLE IF NOT EXISTS posts(
            id INTEGER PRIMARY KEY AUTOINCREMENT,
+           date TEXT NOT NULL, 
            subject TEXT NOT NULL,
            name TEXT NOT NULL,
            body TEXT NOT NULL
