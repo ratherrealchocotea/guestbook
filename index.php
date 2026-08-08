@@ -21,8 +21,6 @@ if (empty($_SESSION["csrf"])) {
     $_SESSION["csrf"] = bin2hex(random_bytes(32));
 }
 
-
-
 if (!isset($_SESSION["captcha_answer"])) {
     new_captcha();
 }
@@ -76,8 +74,10 @@ $posts = $db->query(
     <head>
         <meta charset="utf-8">
         <title>Eternal-Monologue Comment Segment</title>
+        <link  rel="stylesheet" type="text/css" href="./style.css" id="theme-css" />
     </head>
     <body>
+        <h1>Eternal-Monologue Comment Segment</h1>
         <form method="post">
             <input type="hidden" name="csrf" value="<?=h($_SESSION["csrf"])?>">
             <input name="subject" maxlength="80" placeholder="Subject" required>

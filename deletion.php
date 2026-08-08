@@ -30,6 +30,7 @@
     <head> 
         <title>Deletion area</title>
         <meta charset="utf-8">
+        <link  rel="stylesheet" type="text/css" href="./style.css" id="theme-css" />
     </head>
     <body>
         <p>You probably shouldn't be here, but you do you...</p>

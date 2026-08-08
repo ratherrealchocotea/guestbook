@@ -1,0 +1,17 @@
+body {
+    background: #292c33;
+    color: red;
+}
+
+.posts {
+    background: #292c33;
+    color: red;
+    border: 3px solid;
+    align-items: start;
+    align-content: space-evenly;
+}
+
+form {
+    background: #292c33;
+    color: red;
+}
