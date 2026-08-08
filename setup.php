@@ -1,7 +1,9 @@
 #!/usr/bin/env php
 <?php 
 
-$db = new SQLite3(__DIR__ . "/bbs.db");
+include "common.php""
+
+$db = new SQLite3($db_path);
 $db->exec("
            CREATE TABLE IF NOT EXISTS posts(
            id INTEGER PRIMARY KEY AUTOINCREMENT,

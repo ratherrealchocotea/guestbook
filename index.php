@@ -11,7 +11,7 @@ header("X-Content-Type-Options: nosniff");
 header("Referrer-Policy: no-referrer");
 header("Content-Security-Policy: default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'");
 
-$db=new SQLite3(__DIR__ . "/bbs.db");
+$db=new SQLite3($db_path);
 $db->busyTimeout(5000);
 $db->exec("PRAGMA journal_mode=WAL");
 $db->exec("PRAGMA foreign_keys=ON");

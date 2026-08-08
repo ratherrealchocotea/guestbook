@@ -9,7 +9,7 @@
  }
 
  if ($_SERVER["REQUEST_METHOD"] === "POST") {
-     $db = new SQLite3(__DIR__ . "/bbs.db");
+     $db = new SQLite3($db_path);
      check_csrf();
      $stmt = $db->prepare(
          "DELETE FROM posts WHERE id = :id"
