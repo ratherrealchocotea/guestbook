@@ -37,7 +37,7 @@
         <form method="post">
             <input type="hidden" name="csrf" value="<?=h($_SESSION["csrf"])?>">
             <input type="text" name="date" placeholder="Exact Date" required>
-            <button type="submit">Moderation-Delete</button>
+            <button type="submit">Delete by Date/button>
         </form>
     </body>
 </html>

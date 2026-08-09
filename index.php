@@ -13,23 +13,20 @@ header("X-Content-Type-Options: nosniff");
 header("Referrer-Policy: no-referrer");
 header("Content-Security-Policy: default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'");
 
+function contains_url($str)
+{
+    $decoded = html_entity_decode($str, ENT_QUOTES | ENT_HTML5);
+    $decoded = preg_replace('/dot/i', '.', $decoded);
+    $decoded = preg_replace('/slash/i', '/', $decoded);
+    $decoded = preg_replace('/at/i', '@', $decoded);
+    $decoded = str_replace(' ', '', $decoded);
+    return (bool) preg_match('/(https?:\/\/)?[a-z0-9.-]+\.[a-z]{2,}/i', $decoded);
+}
+
 $db=new SQLite3($db_path);
 $db->busyTimeout(5000);
 $db->exec("PRAGMA journal_mode=WAL");
 $db->exec("PRAGMA foreign_keys=ON");
-
-function contains_url($str) 
-{
-    if(preg_match($str, "^((https?|http|)\://((\[?(\d{1,3}\.){3}\d{1,3}\]?)|(([-a-zA-Z0-9]+\.)+[a-zA-Z]{2,4}))(\:\d+)?(/[-a-zA-Z0-9._?,'+&amp;%$#=~\\]+)*/?)$))")) {
-        return false;
-    } else if(str_contains($str, "DOT") || 
-              str_contains($str, "AT") ||
-              str_contains($str, "SLASH")) {
-        return false;
-    } else {
-        return true;
-    }
-}
 
 if (empty($_SESSION["csrf"])) {
     $_SESSION["csrf"] = bin2hex(random_bytes(32));
@@ -68,7 +65,7 @@ if(isset($_POST['post'])) {
        contains_url($body)) {
         exit("Invalid Input.");
     }
-        
+    
     $date = date("Y-m-d H:i:s");  
     
     $stmt = $db->prepare(
@@ -89,7 +86,6 @@ if(isset($_POST['post'])) {
 $posts = $db->query(
     'SELECT * FROM POSTS ORDER BY id DESC'
 );
-
 ?>
 <!doctype html>
 <html>
