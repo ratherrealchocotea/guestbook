@@ -2,9 +2,11 @@
 declare(strict_types=1);
 include "common.php";
 session_start();
+
 if (!isset($_SESSION["captcha_answer"])) {
     gen_captcha();
 }
+
 header("Content-Type: text/html; charset=UTF-8");
 header("X-Frame-Options: DENY");
 header("X-Content-Type-Options: nosniff");
@@ -16,6 +18,18 @@ $db->busyTimeout(5000);
 $db->exec("PRAGMA journal_mode=WAL");
 $db->exec("PRAGMA foreign_keys=ON");
 
+function contains_url($str) 
+{
+    if(preg_match($str, "^((https?|http|)\://((\[?(\d{1,3}\.){3}\d{1,3}\]?)|(([-a-zA-Z0-9]+\.)+[a-zA-Z]{2,4}))(\:\d+)?(/[-a-zA-Z0-9._?,'+&amp;%$#=~\\]+)*/?)$))")) {
+        return false;
+    } else if(str_contains($str, "DOT") || 
+              str_contains($str, "AT") ||
+              str_contains($str, "SLASH")) {
+        return false;
+    } else {
+        return true;
+    }
+}
 
 if (empty($_SESSION["csrf"])) {
     $_SESSION["csrf"] = bin2hex(random_bytes(32));
@@ -34,22 +48,27 @@ if(isset($_POST['post'])) {
         gen_captcha();
         exit("Wrong CAPTCHA.");
     }
-    $subject = strips_tags(trim($_POST['subject'] ?? ''));
+    $subject = strip_tags(trim($_POST['subject'] ?? ''));
     $name = strip_tags(trim($_POST['name'] ?? ''));
     $body = strip_tags(trim($_POST['body'] ?? ''));
 
     if ($name === '') { $name = 'Your friendly neighbourhood\'s Anon';}
     
-    if(
-        ($body === "") ||
-        ($subject === "") ||
-        mb_strlen($subject) > 80 ||
-        mb_strlen($name) > 30 ||
-        mb_strlen($body) > 4000
-    ) {
-        exit('Invalid Input. Go check if your text does not exceed 4000 chars, or the name 30, or the subject 80, or whether they are empty.');
+    if(($body === "") || ($subject === "")) {
+        exit("Both the body and the subject have to be filled.");
     }
-    
+    if(mb_strlen($subject) > 80 ||
+       mb_strlen($name) > 30 ||
+       mb_strlen($body) > 4000
+    ) {     
+        exit("Either the subject, the name, or the body is too long.");
+    }
+    if(contains_url($subject) ||
+       contains_url($name) ||
+       contains_url($body)) {
+        exit("Invalid Input.");
+    }
+        
     $date = date("Y-m-d H:i:s");  
     
     $stmt = $db->prepare(
